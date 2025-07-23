@@ -13,7 +13,7 @@
 //     return rows.length > 0 ? rows[0] : null;
 
 //   } catch (error) {
-//     console.error("Error in findCartItem:", error);
+//     
 //     throw error;
 //   }
 // };
@@ -53,7 +53,7 @@
 //     ]);
 //     return results;
 //   } catch (error) {
-//     console.error("Error in addCartItem:", error);
+//     
 //     throw error;
 //   }
 // };
@@ -86,7 +86,7 @@
 
 //     return results.affectedRows;
 //   } catch (error) {
-//     console.error("Error in updateCartItem:", error);
+//     
 //     throw error;
 //   } finally {
 //     if (connection) {
@@ -102,7 +102,7 @@
 //     const query = `DELETE FROM rajlaxmi_addtocart WHERE product_id = ? AND uid = ?`;
 
 //     const [result] = await connection.execute(query, [uid, product_id]);
-//     console.log("removeFromCart ", result);
+//     
 
 //     if (result.affectedRows > 0) {
 //       return { message: "Product removed from cart" };
@@ -110,7 +110,7 @@
 //       return { message: "No matching product in cart" };
 //     }
 //   } catch (error) {
-//     console.error("Error removing product from cart:", error);
+//     
 //     throw error;
 //   }
 // };
@@ -137,12 +137,13 @@
 //     return rows; // Return the cart items array
 
 //   } catch (error) {
-//     console.error("Error in getCartItemsByUserId:", error);
+//     
 //     throw error;
 //   }
 // };
 
 const { connectToDatabase } = require("../../../config/dbConnection");
+const { withConnection } = require("../../../utils/helper");
 
 // Find a cart item by product ID and user ID
 exports.findCartItem = async (product_id, uid) => {
@@ -153,7 +154,7 @@ exports.findCartItem = async (product_id, uid) => {
     const [rows] = await connection.execute(query, [product_id, uid]);
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error("Error in findCartItem:", error);
+    
     throw error;
   } finally {
     if (connection) await connection.end();
@@ -178,7 +179,7 @@ exports.addCartItem = async (cartItem) => {
     ]);
     return result;
   } catch (error) {
-    console.error("Error in addCartItem:", error);
+    
     throw error;
   } finally {
     if (connection) await connection.end();
@@ -211,7 +212,7 @@ exports.updateCartItem = async (
     ]);
     return result.affectedRows > 0;
   } catch (error) {
-    console.error("Error in updateCartItem:", error);
+    
     throw error;
   } finally {
     if (connection) await connection.end();
@@ -220,17 +221,15 @@ exports.updateCartItem = async (
 
 // Delete cart item
 exports.deleteCartItem = async (uid, product_id) => {
-  let connection;
   try {
-    connection = await connectToDatabase();
-    const query = `DELETE FROM rajlaxmi_addtocart WHERE product_id = ? AND uid = ?`;
-    const [result] = await connection.execute(query, [product_id, uid]);
-    return result.affectedRows > 0;
+    return await withConnection(async (connection) => {
+      const query = `DELETE FROM rajlaxmi_addtocart WHERE product_id = ? AND uid = ?`;
+      const [result] = await connection.execute(query, [product_id, uid]);
+      return result.affectedRows > 0;
+    });
   } catch (error) {
-    console.error("Error removing cart item:", error);
+    
     throw error;
-  } finally {
-    if (connection) await connection.end();
   }
 };
 
@@ -265,9 +264,19 @@ exports.findCartItemPlusWait = async (product_id, uid, product_weight) => {
     ]);
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error("Error in findCartItem:", error);
+    
     throw error;
   } finally {
     if (connection) await connection.end();
   }
+};
+
+exports.getAllCartById = async (id) => {
+  return await withConnection(async (connection) => {
+    const [rows] = await connection.query(
+      `SELECT * FROM rajlaxmi_addtocart WHERE uid = ?`,
+      [id]
+    );
+    return rows;
+  });
 };

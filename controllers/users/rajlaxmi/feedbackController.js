@@ -5,8 +5,7 @@ const registerModel = require("../../../model/users/rajlaxmi/registerModel");
 // CREATE
 exports.createReview = asyncHandler(async (req, res) => {
   try {
-    const { uid, user_name, user_email, rating, product_id, feedback } =
-      req.body;
+    const { user_name, user_email, rating, product_id, feedback } = req.body;
 
     if (!user_name || !user_email || !rating) {
       return res
@@ -15,7 +14,6 @@ exports.createReview = asyncHandler(async (req, res) => {
     }
 
     const id = await reviewModel.addReview(
-      uid,
       user_name,
       user_email,
       rating,
@@ -33,7 +31,7 @@ exports.createReview = asyncHandler(async (req, res) => {
 exports.getAllReviews = asyncHandler(async (req, res) => {
   try {
     const reviews = await reviewModel.getAllReviews();
-    res.status(200).json(reviews);
+    res.status(200).json({ success: true, reviews });
   } catch (error) {
     console.error("Get All Reviews Error:", error);
     throw error;
@@ -46,9 +44,11 @@ exports.getReviewById = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const review = await reviewModel.getReviewById(id);
     if (!review) {
-      return res.status(404).json({ message: "Review not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Review not found" });
     }
-    res.status(200).json(review);
+    res.status(200).json({ success: true, review });
   } catch (error) {
     console.error("Get Review By ID Error:", error);
     throw error;

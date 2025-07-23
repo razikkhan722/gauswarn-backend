@@ -3,8 +3,6 @@ const registerModel = require("../../model/admin/registerModel");
 const bcrypt = require("bcryptjs");
 const authMiddleware = require("../../middlewares/authMiddleware");
 
-
-
 exports.adminUserRegister = asyncHandler(async (req, res) => {
   const { full_name, email, mobile_number, password, role } = req.body;
 
@@ -22,9 +20,7 @@ exports.adminUserRegister = asyncHandler(async (req, res) => {
 
   try {
     //Check if email already exists in database
-    const emailExist = await registerModel.findAdminUserByEmail(
-      email
-    );
+    const emailExist = await registerModel.findAdminUserByEmail(email);
     if (emailExist) {
       return res.json({ message: "Email already exist" });
     }
@@ -45,7 +41,6 @@ exports.adminUserRegister = asyncHandler(async (req, res) => {
       .status(201)
       .json({ success: true, message: "User Register Successfully" });
   } catch (error) {
-    
     res.json({ message: "Database error", error: error.message });
   }
 });
@@ -56,7 +51,17 @@ exports.meAPI = asyncHandler(async (req, res) => {
     const user = req.user;
     res.json({ user, msg: "sss" });
   } catch (error) {
-    
     res.send("An error occured");
+  }
+});
+
+// READ - All
+exports.getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const customers = await registerModel.getAllUsers();
+    res.status(200).json({ success: true, customers });
+  } catch (error) {
+    console.error("Get All Contacts Error:", error);
+    throw error;
   }
 });

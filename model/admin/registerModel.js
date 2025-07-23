@@ -15,7 +15,7 @@ exports.findAdminUserByEmail = async (email) => {
 
 // Registration new user
 exports.adminUserRegister = async (registerTable) => {
-  const { full_name, email, mobile_number, password,role } = registerTable;
+  const { full_name, email, mobile_number, password, role } = registerTable;
 
   //MySQl query
   try {
@@ -27,9 +27,36 @@ exports.adminUserRegister = async (registerTable) => {
         full_name,
         email,
         mobile_number,
-        password,role
+        password,
+        role,
       ]);
       return results;
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    return error;
+  }
+};
+
+exports.findUserById = async (uid) => {
+  try {
+    return await withConnection(async (connection) => {
+      const query = `SELECT * FROM rajlaxmi_user WHERE uid = ?`;
+      const [rows] = await connection.execute(query, [uid]);
+      return rows[0] || null;
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    return error;
+  }
+};
+
+exports.getAllUsers = async () => {
+  try {
+    return await withConnection(async (connection) => {
+      const query = `SELECT * FROM rajlaxmi_user`;
+      const [rows] = await connection.execute(query);
+      return rows || null;
     });
   } catch (error) {
     console.log("error: ", error);

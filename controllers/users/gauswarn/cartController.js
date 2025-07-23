@@ -14,7 +14,7 @@ const moment = require("moment");
 //     product_total_amount,
 //     purchase_price,
 //   } = req.body;
-//   console.log(req.body);
+//   
 
 //   // Validate required fields
 //   if (
@@ -199,7 +199,7 @@ exports.updateFromCart = asyncHandler(async (req, res, next) => {
   try {
     const { product_id, user_id, product_quantity, product_total_amount } =
       req.body;
-    console.log(req.body);
+    
 
     if (!product_id && !user_id) {
       return res.json({
@@ -209,7 +209,7 @@ exports.updateFromCart = asyncHandler(async (req, res, next) => {
     }
 
     const cartItem = await cartModel.findCartItem(product_id, user_id);
-    console.log("cartItem: ", cartItem);
+    
 
     if (!cartItem) {
       return res.json({

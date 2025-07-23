@@ -61,7 +61,7 @@ router.get("/getCSV", exportTableToExcel);
 // router.post("/create-order", createPaymentAndGenerateUrl);
 // router.post("/status", getPhonePeUrlStatusAndUpdatePayment);
 
-// razerpay
+// razorpay
 router.post("/create-order", createPaymentAndGenerateUrlRazor);
 router.post("/status", getRazorpayStatusAndUpdatePayment);
 

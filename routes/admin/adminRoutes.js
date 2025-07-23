@@ -17,6 +17,7 @@ const monthlyReportController = require("../../controllers/admin/monthlyReportCo
 const productControllerRajlaxmi = require("../../controllers/users/rajlaxmi/productController");
 const feedbackRajlaxmiController = require("../../controllers/users/rajlaxmi/feedbackController");
 const contactControllerRajlaxmi = require("../../controllers/users/rajlaxmi/contactController");
+const orderControllerRajlaxmi = require("../../controllers/users/rajlaxmi/orderController");
 
 // Gauswarn
 const productControllerGauswarn = require("../../controllers/users/gauswarn/productController");
@@ -37,14 +38,33 @@ router.get("/getAllCustomer", authMiddleware, userInfoController.getAllUserInfo)
 router.get("/getAllOrderDetails", authMiddleware, userInfoController.getAllOrderDetails);
 router.post("/getAllSales", authMiddleware, monthlyReportController.getAllSales);
 
+router.post("/getAllSalesRajlaxmi", monthlyReportController.getAllSalesRajlaxmi);
+
+
+
+
 // ----------------------------
 // Rajlaxmi Routes
 // ----------------------------
+
+// Cutomers
+router.get("/getAllCutomerRajlaxmi",  registerController.getAllUsers);
+
+
 // Products
 router.post("/createProductRajlaxmi", productControllerRajlaxmi.addProduct);
 router.post("/updateProductById", productControllerRajlaxmi.updateProduct);
 router.post("/deleteProductRajlaxmiById/:product_id", productControllerRajlaxmi.deleteProduct);
 router.get("/getAllProductsWithFeedback", productControllerRajlaxmi.getAllProductsWithFeedback);
+router.get("/getAllProductsRajlaxmi", productControllerRajlaxmi.getAllProducts);
+router.delete("/deleteProductsRajlaxmiById/:product_id", productControllerRajlaxmi.deleteProduct);
+
+// orders
+router.post("/createOrderRajlaxmi", orderControllerRajlaxmi.createOrder);
+router.post("/updateRajlaxmiOrderById", orderControllerRajlaxmi.updateOrder);
+router.post("/deleteRajlaxmiOrderById", orderControllerRajlaxmi.deleteOrder);
+router.get("/rajlaxmiGetAllOrder", orderControllerRajlaxmi.getAllOrders);
+
 
 // Feedback
 router.post("/createFeedbackRajlaxmi", feedbackRajlaxmiController.createReview);

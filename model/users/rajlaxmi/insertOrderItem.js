@@ -1,10 +1,9 @@
-const { connectToDatabase } = require("../../../config/dbConnection");
-
-// ✅ Insert Order Item
+const { withConnection } = require("../../../utils/helper");
 const insertOrderItem = async (
-  order_id,
-  uid,
+  orderId,
+  userId,
   product_id,
+  user_name,
   product_name,
   product_price,
   product_weight,
@@ -12,48 +11,62 @@ const insertOrderItem = async (
   product_total_amount
 ) => {
   try {
-    const connection = await connectToDatabase();
-    const query = `
+    return await withConnection(async (connection) => {
+      const query = `
       INSERT INTO rajlaxmi_orders 
-      (order_id, uid, product_id, product_name, product_price, product_weight, product_quantity, product_total_amount, order_status, created_at) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Processing', NOW())
+      (order_id, uid, product_id, user_name, product_name, product_price, product_weight, product_quantity, product_total_amount, order_status, created_at) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Processing', NOW())
     `;
 
-    const [result] = await connection.execute(query, [
-      order_id,
-      uid,
-      product_id,
-      product_name,
-      product_price,
-      product_weight,
-      product_quantity,
-      product_total_amount
-    ]);
+      const [result] = await connection.execute(query, [
+        orderId || null,
+        userId || null,
+        product_id || null,
+        user_name || null,
+        product_name || null,
+        product_price || null,
+        product_weight || null,
+        product_quantity || null,
+        product_total_amount || null,
+      ]);
 
-    return result.affectedRows > 0; // ✅ Returns true if successful
+      return result.affectedRows > 0;
+    });
   } catch (error) {
-    console.error("❌ Error inserting order item:", error);
     return false;
   }
 };
 
-// ✅ Delete Cart Items
 const deleteCartItems = async (uid) => {
   try {
-    const connection = await connectToDatabase();
-    const query = `DELETE FROM rajlaxmi_addtocart WHERE uid = ?`;
-    
-    const [result] = await connection.execute(query, [uid]);
+    return await withConnection(async (connection) => {
+      const query = `DELETE FROM rajlaxmi_addtocart WHERE uid = ?`;
 
-    return result.affectedRows > 0; // ✅ Returns true if successful
+      const [result] = await connection.execute(query, [uid]);
+
+      return result.affectedRows > 0;
+    });
   } catch (error) {
-    console.error("❌ Error deleting cart items:", error);
     return false;
   }
 };
 
-// ✅ Export functions for use in other files
+const updateOrderItemStatus = async (order_status, uid) => {
+  try {
+    return await withConnection(async (connection) => {
+      const query = `UPDATE rajlaxmi_orders SET order_status = ?  WHERE uid = ?`;
+
+      const [result] = await connection.execute(query, [order_status, uid]);
+
+      return result.affectedRows > 0;
+    });
+  } catch (error) {
+    return false;
+  }
+};
+
 module.exports = {
   insertOrderItem,
-  deleteCartItems
+  deleteCartItems,
+  updateOrderItemStatus,
 };

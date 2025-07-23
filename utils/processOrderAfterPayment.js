@@ -4,7 +4,7 @@
 //       const cartItems = await addtocartModel.getCartItems(uid);
   
 //       if (!cartItems || cartItems.length === 0) {
-//         console.log("No items in cart to place order.");
+//         
 //         return;
 //       }
   
@@ -28,9 +28,9 @@
 //       // Delete cart items after successful order creation
 //       await addtocartModel.deleteCartItems(uid);
   
-//       console.log("Order placed successfully and cart cleared.");
+//       
 //     } catch (error) {
-//       console.error("Error processing order after payment:", error);
+//       
 //     }
 //   };
   
@@ -43,7 +43,7 @@ exports.processOrderAfterPayment = async (uid) => {
       const cartItems = await addtocartModel.getCartItemsByUserId(uid);
   
       if (!cartItems || cartItems.length === 0) {
-        console.log("No items in cart to place order.");
+        
         return;
       }
   
@@ -68,20 +68,20 @@ exports.processOrderAfterPayment = async (uid) => {
   
         if (!success) {
           orderSuccess = false;
-          console.error(`Failed to insert product ${item.product_id} into orders.`);
+          
         }
       }
   
       // ✅ Delete cart items **only if** all insertions were successful
       if (orderSuccess) {
         await orderModel.deleteCartItems(uid);
-        console.log("Order placed successfully and cart cleared.");
+        
       } else {
-        console.error("Order failed for some items. Cart not cleared.");
+        
       }
   
     } catch (error) {
-      console.error("Error processing order after payment:", error);
+      
     }
   };
   

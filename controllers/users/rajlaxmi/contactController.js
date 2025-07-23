@@ -64,8 +64,8 @@ exports.createContact = asyncHandler(async (req, res) => {
 // READ - All
 exports.getAllContacts = asyncHandler(async (req, res) => {
   try {
-    const Contacts = await contactModel.getAllContacts();
-    res.status(200).json(Contacts);
+    const contact = await contactModel.getAllContacts();
+    res.status(200).json({ success: true, contact });
   } catch (error) {
     console.error("Get All Contacts Error:", error);
     throw error;

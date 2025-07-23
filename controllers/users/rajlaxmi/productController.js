@@ -14,6 +14,7 @@ exports.addProduct = async (req, res) => {
       product_category,
       product_image,
       product_tax,
+      purchase_price,
     } = req.body;
 
     if (
@@ -60,6 +61,7 @@ exports.addProduct = async (req, res) => {
       product_image: JSON.stringify(product_image),
       product_tax,
       product_final_price: JSON.stringify(productWeightVariants),
+      purchase_price,
     };
     const product = await productModel.addProduct(productData);
 
@@ -69,7 +71,7 @@ exports.addProduct = async (req, res) => {
       message: "Product created successfully!",
     });
   } catch (error) {
-    res.json({ error: "Failed to create product" });
+    res.json({ success: false, error: "Failed to create product" });
   }
 };
 
@@ -77,18 +79,18 @@ exports.addProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await productModel.getAllProducts();
-    res.json({ products });
+    res.json({ success: true, products });
   } catch (error) {
-    res.json({ error: "Failed to fetch products" });
+    res.json({ success: false, error: "Failed to fetch products" });
   }
 };
 
 exports.getAllProductsWithFeedback = async (req, res) => {
   try {
     const products = await productModel.getAllProductsWithFeedback();
-    res.json({ products });
+    res.json({ success: true, products });
   } catch (error) {
-    res.json({ error: "Failed to fetch products" });
+    res.json({ success: false, error: "Failed to fetch products" });
   }
 };
 
@@ -104,6 +106,7 @@ exports.updateProduct = async (req, res) => {
       product_category,
       product_image,
       product_tax,
+      purchase_price,
     } = req.body;
     const converted_product_weight = await extractIntegers(product_weight);
 
@@ -134,13 +137,15 @@ exports.updateProduct = async (req, res) => {
       product_image: JSON.stringify(product_image),
       product_tax,
       product_final_price: JSON.stringify(productWeightVariants),
+      purchase_price,
     };
 
     const isUpdated = await productModel.updateProduct(productData);
-    if (!isUpdated) return res.json({ message: "Product not found" });
-    res.json({ message: "Product updated successfully!" });
+    if (!isUpdated)
+      return res.json({ success: true, message: "Product not found" });
+    res.json({ success: true, message: "Product updated successfully!" });
   } catch (error) {
-    res.json({ error: "Failed to update product" });
+    res.json({ success: false, error: "Failed to update product" });
   }
 };
 
@@ -148,10 +153,11 @@ exports.deleteProduct = async (req, res) => {
   try {
     const { product_id } = req.params;
     const isDeleted = await productModel.deleteProduct(product_id);
-    if (!isDeleted) return res.json({ message: "Product not found" });
+    if (!isDeleted)
+      return res.json({ success: true, message: "Product not found" });
 
-    res.json({ message: "Product deleted successfully!" });
+    res.json({ success: true, message: "Product deleted successfully!" });
   } catch (error) {
-    res.json({ error: "Failed to delete product" });
+    res.json({ success: false, error: "Failed to delete product" });
   }
 };

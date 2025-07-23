@@ -16,6 +16,7 @@ exports.addProduct = async (productData) => {
       product_image,
       product_tax,
       product_final_price,
+      purchase_price,
     } = productData;
 
     // Generate a unique product_id
@@ -25,8 +26,8 @@ exports.addProduct = async (productData) => {
     return await withConnection(async (connection) => {
       const query = `
         INSERT INTO rajlaxmi_product 
-        (product_name, product_description, product_price, product_weight, product_stock, product_category, product_image, product_tax, product_final_price) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (product_name, product_description, product_price, product_weight, product_stock, product_category, product_image, product_tax, product_final_price, purchase_price) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const [result] = await connection.execute(query, [
@@ -39,6 +40,7 @@ exports.addProduct = async (productData) => {
         product_image || null,
         product_tax || null,
         product_final_price || null,
+        purchase_price || null,
       ]);
 
       return result.insertId;
@@ -131,6 +133,7 @@ exports.updateProduct = async (productData) => {
       product_category,
       product_image,
       product_tax,
+      purchase_price,
     } = productData;
 
     return await withConnection(async (connection) => {
@@ -144,7 +147,8 @@ SET
     product_stock = ?,
     product_category = ?,
     product_image = ?,
-    product_tax = ?
+    product_tax = ?,
+    purchase_price = ?
 WHERE
     product_id = ?;`;
 
@@ -157,6 +161,7 @@ WHERE
         product_category,
         product_image,
         product_tax,
+        purchase_price,
         product_id,
       ]);
 

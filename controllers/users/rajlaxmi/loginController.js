@@ -6,15 +6,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize"); // Import Sequelize Operators
 
-
 exports.userLogin = asyncHandler(async (req, res) => {
   // Email/mobile , password to login api input field 2 seconds
   const { emailmobile, password } = req.body;
 
   if (!emailmobile || !password) {
-    return res
-      
-      .json({ message: "Email/Mobile and password are required" });
+    return res.json({ message: "Email/Mobile and password are required" });
   }
 
   try {
@@ -43,14 +40,20 @@ exports.userLogin = asyncHandler(async (req, res) => {
       { expiresIn: "1h" }
     );
 
-      // Fetch user's cart data
-      const cartItems = await addtocartModel.getCartItemsByUserId(user.uid);
-      console.log('cartItems: ', cartItems);
-  
+    // Fetch user's cart data
+    const cartItems = await addtocartModel.getCartItemsByUserId(user.uid);
+    
 
-    res.json({ success: true, message: "Login successful", token, uid: user.uid, cart: cartItems });
+    res.json({
+      success: true,
+      message: "Login successful",
+      token,
+      id: user.id,
+      uid: user.uid,
+      cart: cartItems,
+    });
   } catch (error) {
-    console.error("Login error:", error);
+    
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });

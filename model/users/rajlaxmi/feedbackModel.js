@@ -2,7 +2,6 @@ const { withConnection } = require("../../../utils/helper");
 
 // Create (Add Review)
 exports.addReview = async (
-  uid,
   user_name,
   user_email,
   rating,
@@ -12,11 +11,10 @@ exports.addReview = async (
   try {
     return await withConnection(async (connection) => {
       const query = `
-        INSERT INTO rajlaxmi_feedback (uid, user_name, user_email, rating, product_id, feedback)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO rajlaxmi_feedback ( user_name, user_email, rating, product_id, feedback)
+        VALUES ( ?, ?, ?, ?, ?)
       `;
       const [result] = await connection.execute(query, [
-        uid,
         user_name,
         user_email,
         rating,

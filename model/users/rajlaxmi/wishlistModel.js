@@ -33,17 +33,31 @@ exports.addWishlist = async ({
   }
 };
 
-
 // Get All Wishlist
-exports.getAllWishlist = async () => {
+exports.getAllWishlistAll = async () => {
   try {
     return await withConnection(async (connection) => {
-      const query = `SELECT * FROM rajlaxmi_wishlist`;
+      const query = `SELECT * FROM rajlaxmi_wishlist WHERE uid = ?`;
       const [products] = await connection.execute(query);
       return products;
     });
   } catch (error) {
     throw new Error(error.message);
+  }
+};
+
+exports.getAllWishlist = async (id) => {
+  try {
+    return await withConnection(async (connection) => {
+      const [rows] = await connection.query(
+        `SELECT * FROM rajlaxmi_wishlist WHERE uid = ?`,
+        [id]
+      );
+      return rows;
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    throw error;
   }
 };
 

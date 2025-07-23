@@ -1,7 +1,5 @@
 const { withConnection } = require("../../../utils/helper");
 
-
-
 // Check if the user exists in uid
 exports.findUserByUid = async (uid) => {
   try {
@@ -16,7 +14,6 @@ exports.findUserByUid = async (uid) => {
     return error;
   }
 };
- 
 
 exports.findUserByEmail = async (email) => {
   try {
@@ -82,5 +79,19 @@ exports.registerUser = async (userData) => {
   } catch (error) {
     console.error("Database error in registerUser:", error);
     throw new Error("Database query failed");
+  }
+};
+
+exports.findUserByid = async (id) => {
+  try {
+    // const connection = await connectToDatabase();
+    return await withConnection(async (connection) => {
+      const query = `SELECT * FROM rajlaxmi_user WHERE id = ?`;
+      const [rows] = await connection.execute(query, [id]);
+      return rows[0] || null;
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    return error;
   }
 };
